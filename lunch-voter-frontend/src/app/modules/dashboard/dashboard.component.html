@@ -1,0 +1,36 @@
+<div class="dash-board">
+  <h1>VOTING SYSTEM</h1>
+</div>
+
+<hr class="dotted" />
+
+<app-createform></app-createform>
+
+<!-- <div class="dash-board" id="create_form" *ngIf="!isShow">
+  <form [formGroup]="createForm" (ngSubmit)="createSession()">
+    <div>
+      <input class="input" type="text" id="name" name="name" placeholder="Enter your name" formControlName="name" required />
+      <button class="button" type="submit" [disabled]="createForm.invalid">Create session</button>
+    </div>
+    <div *ngIf="createForm.get('name')!.invalid && createForm.get('name')!.touched">
+      <small>Please enter a valid name (minimum 3 characters).</small>
+    </div>
+  </form>
+</div> -->
+
+<!-- <div class="dash-board" id="join_form">
+  <form [formGroup]="createForm" (ngSubmit)="createSession()">
+    <div>
+      <input class="input" type="text" id="name" name="name" placeholder="Enter your name" formControlName="name" required />
+      <button class="button" type="submit" [disabled]="createForm.invalid">Create session</button>
+    </div>
+    <div *ngIf="createForm.get('name')!.invalid && createForm.get('name')!.touched">
+      <small>Please enter a valid name (minimum 3 characters).</small>
+    </div>
+  </form>
+</div> -->
+
+<app-joinform></app-joinform>
+
+<hr class="dotted" />
+<!-- <p>{{ content }}</p> -->

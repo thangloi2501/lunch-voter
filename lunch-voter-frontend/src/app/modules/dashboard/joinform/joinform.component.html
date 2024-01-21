@@ -1,0 +1,13 @@
+<div class="dash-board" id="join_form" *ngIf="!isShow">
+  <form [formGroup]="joinForm" (ngSubmit)="joinSession()">
+    <div>
+      <input class="input" type="text" id="name" name="code" placeholder="Enter your session code" formControlName="name" required />
+      <button class="button" type="submit" [disabled]="joinForm.invalid">Join session</button>
+    </div>
+    <div *ngIf="joinForm.get('name')!.invalid && joinForm.get('name')!.touched">
+      <small>Please enter a valid code.</small>
+    </div>
+  </form>
+</div>
+
+<div>{{ content }}</div>
