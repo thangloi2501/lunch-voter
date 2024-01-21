@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
 
-  showJoin: boolean = false;
+  showJoinForm: boolean = false;
 
   constructor(
     private crudService: CrudService,
@@ -18,7 +18,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.url.subscribe(urlSegments => {
-      this.showJoin = urlSegments.some(segment => segment.path === 'join');
+      this.showJoinForm = urlSegments.some(segment => segment.path === 'join');
     });
   }
 }

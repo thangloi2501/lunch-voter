@@ -69,7 +69,7 @@ public class VoteController {
   }
 
   @ApiOperation(value = "End a voting session. Only creator is allowed to end its session.")
-  @DeleteMapping
+  @PostMapping("/end")
   @ApiResponses(value = {
       @io.swagger.annotations.ApiResponse(code = 200, message = "Success."),
       @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid input parameters."),

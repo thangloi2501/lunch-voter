@@ -1,4 +1,4 @@
-<div class="dash-board" id="create_form" *ngIf="isShow">
+<div class="dash-board" id="create_form" *ngIf="isShowForm">
   <form [formGroup]="createForm" (ngSubmit)="createSession()">
     <div>
       <input class="input" type="text" id="name" name="name" placeholder="Enter your name" formControlName="name" required />
@@ -9,5 +9,9 @@
     </div>
   </form>
 </div>
-
-<div>{{ content }}</div>
+<div class="dash-board" id="info" *ngIf="!isShowForm">
+  <form [formGroup]="endForm" (ngSubmit)="endSession()">
+    <p>User: {{ infoName }} <button *ngIf="isCreator" class="button">End session</button></p>
+    <p>Invite link: {{ infoLink }}</p>
+  </form>
+</div>

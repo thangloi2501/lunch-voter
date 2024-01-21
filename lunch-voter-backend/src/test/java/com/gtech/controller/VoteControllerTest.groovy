@@ -94,14 +94,14 @@ class VoteControllerTest extends Specification {
         result.andExpect(MockMvcResultMatchers.status().isOk())
     }
 
-    def "DELETE end a voting session should succeed"() {
+    def "POST end a voting session should succeed"() {
         given:
         Map requestBody = [
                 "code"     : "dummy-code",
                 "userCode" : "dummy-usercode"
         ]
 
-        RequestBuilder request = MockMvcRequestBuilders.delete('/api/v1/votes')
+        RequestBuilder request = MockMvcRequestBuilders.post('/api/v1/votes/end')
                 .with(SecurityMockMvcRequestPostProcessors.csrf())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectWriter.writeValueAsString(requestBody))

@@ -4,9 +4,10 @@
 
 <hr class="dotted" />
 
-<app-createform *ngIf="!showJoin"></app-createform>
+<app-createform *ngIf="!showJoinForm"></app-createform>
 
-<app-joinform *ngIf="showJoin"></app-joinform>
+<app-joinform *ngIf="showJoinForm"></app-joinform>
 
 <hr class="dotted" />
-<!-- <p>{{ content }}</p> -->
+
+<app-submitform></app-submitform>

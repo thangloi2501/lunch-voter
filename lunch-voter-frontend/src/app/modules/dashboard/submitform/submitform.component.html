@@ -1,0 +1,12 @@
+<div class="dash-board" id="vote_form" *ngIf="isShowForm">
+  <form [formGroup]="submitForm" (ngSubmit)="submitVote()">
+    <div>
+      <input class="input" type="text" id="vote" name="vote" placeholder="Enter your vote" formControlName="vote" required />
+      <button class="button" type="submit" [disabled]="submitForm.invalid">Vote!!</button>
+    </div>
+    <div *ngIf="submitForm.get('vote')!.invalid && submitForm.get('vote')!.touched">
+      <small>Please enter a valid vote option (minimum 3 characters).</small>
+    </div>
+  </form>
+  <hr class="dotted" />
+</div>
