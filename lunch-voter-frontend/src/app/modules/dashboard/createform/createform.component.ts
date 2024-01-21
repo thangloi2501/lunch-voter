@@ -25,7 +25,7 @@ export class CreateFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]]
     });
 
-    this.isShow = localStorage.getItem('code') != null;
+    this.isShow = localStorage.getItem('code') == null;
 
     console.log('>>' + localStorage.getItem('code'));
     console.log('>>' + this.isShow);

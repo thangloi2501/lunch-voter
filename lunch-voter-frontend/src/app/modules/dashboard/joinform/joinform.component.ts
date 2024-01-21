@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
 import { CrudService } from 'src/app/shared/services/crud/crud.service';
-
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-joinform',
@@ -17,18 +16,20 @@ export class JoinFormComponent implements OnInit {
 
   constructor(
     private crudService: CrudService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private route: ActivatedRoute
   ) { }
 
-  ngOnInit() {
-    this.joinForm = this.fb.group({
-      name: ['', [Validators.required]]
+  ngOnInit(): void {
+    this.isShow = localStorage.getItem('userCode') == null;
+
+    this.route.queryParams.subscribe(params => {
+      const code = params['code'] || '';
+
+      this.joinForm = this.fb.group({
+        code: [code, [Validators.required]]
+      });
     });
-
-    this.isShow = localStorage.getItem('code') != null;
-
-    console.log('>>' + localStorage.getItem('code'));
-    console.log('>>' + this.isShow);
   }
 
   joinSession(): void {
