@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { JoinFormComponent } from './joinform/joinform.component';
 import { SubmitFormComponent } from './submitform/submitform.component';
 import { LiveboardComponent } from './liveboard/liveboard.component';
+import { VoteInfoComponent } from './liveboard/voteinfo.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { LiveboardComponent } from './liveboard/liveboard.component';
     CreateFormComponent,
     JoinFormComponent,
     SubmitFormComponent,
-    LiveboardComponent
+    LiveboardComponent,
+    VoteInfoComponent
   ],
   imports: [
     CommonModule,

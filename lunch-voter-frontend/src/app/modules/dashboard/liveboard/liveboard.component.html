@@ -1,5 +1,8 @@
 <div class="dash-board" id="liveboard" *ngIf="isShowForm">
-  <div></div>
+  <div>
+    <h3>Voting Information</h3>
+    <app-voteinfo *ngFor="let voteInfo of voteInfoList" [voteInfo]="voteInfo"></app-voteinfo>
+  </div>
   <hr class="dotted" />
   <div></div>
 </div>
