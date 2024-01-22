@@ -14,4 +14,7 @@
     <p>User: {{ infoName }} <button *ngIf="isCreator" class="button">End session</button></p>
     <p>Invite link: {{ infoLink }}</p>
   </form>
+  <form [formGroup]="endForm" (ngSubmit)="test()">
+    <p><button class="button">Test</button></p>
+  </form>
 </div>

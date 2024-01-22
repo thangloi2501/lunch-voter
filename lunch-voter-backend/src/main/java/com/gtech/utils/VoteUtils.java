@@ -7,7 +7,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class VoteUtils {
 
-  public static final String TOPIC_VOTE = "/topic/vote";
+  public static final String TOPIC_VOTE = "/ws/topic/vote";
   public static final Random RANDOM = new Random();
 
   public static String generateCode() {

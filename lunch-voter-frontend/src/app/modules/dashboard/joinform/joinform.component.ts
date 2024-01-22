@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CrudService } from 'src/app/shared/services/crud/crud.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { VisibilityService } from '../visibility.service';
+import { VisibilityService } from '../../../shared/services/visibility.service';
 
 @Component({
   selector: 'app-joinform',

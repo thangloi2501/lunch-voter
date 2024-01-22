@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CrudService } from 'src/app/shared/services/crud/crud.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Location } from '@angular/common';
-import { VisibilityService } from '../visibility.service';
+import { VisibilityService } from '../../../shared/services/visibility.service';
+import { WebsocketService } from 'src/app/shared/services/websocket.service';
 
 @Component({
   selector: 'app-createform',
@@ -21,7 +22,8 @@ export class CreateFormComponent implements OnInit {
     private crudService: CrudService,
     private fb: FormBuilder,
     private location: Location,
-    private visibilityService: VisibilityService
+    private visibilityService: VisibilityService,
+    private websocketService: WebsocketService
   ) { }
 
   ngOnInit() {
@@ -64,6 +66,12 @@ export class CreateFormComponent implements OnInit {
 
           this.visibilityService.setVisibility(true);
 
+          this.websocketService.connect('/ws/topic/vote/' + data.code,
+            message => {
+              alert(message);
+              console.log(message);
+            });
+
           console.log(data);
         })
         .catch(error => {
@@ -74,6 +82,15 @@ export class CreateFormComponent implements OnInit {
     } else {
       alert('Please fill in all the required fields.');
     }
+  }
+
+  test(): void {
+    this.websocketService.disconnect();
+    this.websocketService.connect('/ws/topic/vote/' + localStorage.getItem('code'),
+      message => {
+        alert(message);
+        console.log(message);
+      });
   }
 
   endSession(): void {
