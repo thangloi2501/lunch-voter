@@ -1,4 +1,4 @@
-package com.gtech.model;
+package com.gtech.dto.api;
 
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

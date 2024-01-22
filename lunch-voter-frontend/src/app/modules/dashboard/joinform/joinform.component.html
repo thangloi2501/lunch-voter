@@ -20,4 +20,5 @@
 <div class="dash-board" id="info" *ngIf="!isShowForm">
   <p>User: {{ infoName }}</p>
   <p>Invite link: {{ infoLink }}</p>
+  <button type="button" class="button" (click)="leaveSession()">Leave Session</button>
 </div>

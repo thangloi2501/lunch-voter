@@ -1,5 +1,6 @@
-package com.gtech.model;
+package com.gtech.dto.api;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,9 @@ import lombok.Setter;
 @Setter @Getter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class Greeting {
-	private String content;
+public class VoteItem {
 
+	private String name;
+	private String voteValue;
+	private LocalDateTime updatedAt;
 }

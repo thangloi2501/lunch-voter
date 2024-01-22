@@ -9,17 +9,11 @@ import { environment } from 'src/environments/environment';
 export class WebsocketService {
     private stompClient: any;
 
-    connect(destination: string, callback: (message: any) => void) {
+    connect() {
         const socket = new SockJS(environment.wsURL);
         this.stompClient = Stomp.over(socket);
-        const that = this;
         this.stompClient.connect({}, () => {
             console.log('Connected to WebSocket');
-            that.stompClient.subscribe(destination, (message: any) => {
-                console.log(message);
-                callback(JSON.parse(message.body));
-            });
-
         });
     }
 

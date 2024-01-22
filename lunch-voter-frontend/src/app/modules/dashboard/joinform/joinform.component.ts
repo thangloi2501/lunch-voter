@@ -3,6 +3,7 @@ import { CrudService } from 'src/app/shared/services/crud/crud.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { VisibilityService } from '../../../shared/services/visibility.service';
+import { WebsocketService } from 'src/app/shared/services/websocket.service';
 
 @Component({
   selector: 'app-joinform',
@@ -19,7 +20,8 @@ export class JoinFormComponent implements OnInit {
     private crudService: CrudService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private visibilityService: VisibilityService
+    private visibilityService: VisibilityService,
+    private websocketService: WebsocketService
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +35,15 @@ export class JoinFormComponent implements OnInit {
         code: [code, [Validators.required]]
       });
     });
+  }
+
+  leaveSession(): void {
+    this.websocketService.disconnect();
+
+    localStorage.removeItem('code');
+    localStorage.removeItem('name');
+    localStorage.removeItem('userCode');
+    window.location.reload();
   }
 
   joinSession(): void {

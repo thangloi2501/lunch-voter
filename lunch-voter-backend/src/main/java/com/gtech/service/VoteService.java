@@ -1,26 +1,26 @@
 package com.gtech.service;
 
-import static com.gtech.utils.VoteUtils.RANDOM;
-import static com.gtech.utils.VoteUtils.TOPIC_VOTE;
-
 import com.gtech.db.entity.UserVote;
 import com.gtech.db.entity.VoteSession;
 import com.gtech.db.repository.UserVoteRepo;
 import com.gtech.db.repository.VoteSessionRepo;
+import com.gtech.dto.api.CreateRequest;
+import com.gtech.dto.api.CreateResponse;
+import com.gtech.dto.api.EndRequest;
+import com.gtech.dto.api.JoinRequest;
+import com.gtech.dto.api.JoinResponse;
+import com.gtech.dto.api.LeaveRequest;
+import com.gtech.dto.api.SubmitRequest;
+import com.gtech.dto.api.VoteItem;
+import com.gtech.dto.message.UserInfoMessage;
+import com.gtech.dto.message.VoteInfoMessage;
 import com.gtech.exception.ApiException;
-import com.gtech.model.CreateRequest;
-import com.gtech.model.CreateResponse;
-import com.gtech.model.EndRequest;
-import com.gtech.model.JoinRequest;
-import com.gtech.model.JoinResponse;
-import com.gtech.model.SubmitRequest;
-import com.gtech.model.VoteResponse;
 import com.gtech.utils.AppUtils;
 import com.gtech.utils.VoteUtils;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import javax.transaction.Transactional;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -78,9 +78,11 @@ public class VoteService {
         .build());
 
     simpMessagingTemplate.convertAndSend(
-        getTopicDestination(joinRequest.getCode()),
-        VoteResponse.builder()
-            .content(AppUtils.getMessage("vote.user-join", joinRequest.getName()))
+        VoteHelper.getTopicDestination(joinRequest.getCode()),
+        UserInfoMessage.builder()
+            .name(joinRequest.getName())
+            .action(AppUtils.getMessage("message.user.join-session"))
+            .updatedAt(LocalDateTime.now())
             .build());
 
     return JoinResponse.builder()
@@ -102,14 +104,12 @@ public class VoteService {
     }
 
     userVote.setVoteValue(submitRequest.getVoteValue());
-    userVoteRepo.save(userVote);
+    userVoteRepo.saveAndFlush(userVote);
 
     simpMessagingTemplate.convertAndSend(
-        getTopicDestination(submitRequest.getCode()),
-        VoteResponse.builder()
-            .content(AppUtils.getMessage("vote.user-submit",
-                userVote.getName(),
-                submitRequest.getVoteValue()))
+        VoteHelper.getTopicDestination(submitRequest.getCode()),
+        VoteInfoMessage.builder()
+            .voteItems(VoteHelper.toVoteItems(voteSession.getUserVotes()))
             .build());
   }
 
@@ -122,11 +122,11 @@ public class VoteService {
     }
 
     final var votes = voteSession.getUserVotes();
-    if (!hasVotes(votes)) {
+    if (!VoteHelper.hasVotes(votes)) {
       throw ApiException.from(HttpStatus.BAD_REQUEST, "vote.error.empty-user-vote-list");
     }
 
-    final UserVote finalVote = chooseRandomVote(votes);
+    final UserVote finalVote = VoteHelper.chooseRandomVote(votes);
 
     voteSession.setFinalUserVoteId(finalVote.getId());
     voteSessionRepo.save(voteSession);
@@ -138,25 +138,42 @@ public class VoteService {
         .orElse(endRequest.getUserCode());
 
     simpMessagingTemplate.convertAndSend(
-        getTopicDestination(endRequest.getCode()),
-        VoteResponse.builder()
-            .content(String.format("User %s end session. Final vote: %s",
-                creatorName, finalVote.getVoteValue()))
+        VoteHelper.getTopicDestination(endRequest.getCode()),
+        UserInfoMessage.builder()
+            .name(creatorName)
+            .action(AppUtils.getMessage("message.user.end-session"))
+            .updatedAt(LocalDateTime.now())
             .build());
   }
 
-  private boolean hasVotes(@NonNull List<UserVote> votes) {
-    return votes.stream()
-        .anyMatch(vote -> Objects.nonNull(vote.getVoteValue()));
+  @Transactional
+  public List<VoteItem> getVotes(String code) {
+    final var voteSession = voteSessionRepo.findOneByCode(code)
+        .orElseThrow(() -> ApiException.notFound("Vote session", "code", code));
+
+    return VoteHelper.toVoteItems(voteSession.getUserVotes());
   }
 
-  private UserVote chooseRandomVote(List<UserVote> votes) {
-    int randomIndex = RANDOM.nextInt(votes.size());
-    return votes.get(randomIndex);
-  }
+  @Transactional
+  public void leaveSession(LeaveRequest leaveRequest) {
+    final var voteSession = validateAndGetSession(leaveRequest.getCode());
 
-  private String getTopicDestination(String code) {
-    return String.format("%s/%s", TOPIC_VOTE, code);
+    final var userVote = userVoteRepo.findOneByUserCode(leaveRequest.getUserCode())
+        .orElseThrow(() -> ApiException.notFound("User vote", "userCode", leaveRequest.getUserCode()));
+
+    if (Objects.equals(voteSession.getCreatorCode(), userVote.getUserCode())) {
+      throw ApiException.from(HttpStatus.BAD_REQUEST, "vote.leave.error.creator-cannot-leave-session");
+    }
+
+    userVoteRepo.delete(userVote);
+
+    simpMessagingTemplate.convertAndSend(
+        VoteHelper.getTopicDestination(leaveRequest.getCode()),
+        UserInfoMessage.builder()
+            .name(userVote.getName())
+            .action(AppUtils.getMessage("message.user.leave-session"))
+            .updatedAt(LocalDateTime.now())
+            .build());
   }
 
   private VoteSession validateAndGetSession(String code) {

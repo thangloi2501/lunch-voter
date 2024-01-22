@@ -5,8 +5,8 @@ import com.gtech.db.entity.VoteSession
 import com.gtech.db.repository.UserVoteRepo
 import com.gtech.db.repository.VoteSessionRepo
 import com.gtech.exception.ApiException
-import com.gtech.model.CreateRequest
-import com.gtech.model.JoinRequest
+import com.gtech.dto.api.CreateRequest
+import com.gtech.dto.api.JoinRequest
 import org.spockframework.spring.SpringBean
 import org.spockframework.spring.SpringSpy
 import org.springframework.context.annotation.PropertySource

@@ -11,10 +11,11 @@
 </div>
 <div class="dash-board" id="info" *ngIf="!isShowForm">
   <form [formGroup]="endForm" (ngSubmit)="endSession()">
-    <p>User: {{ infoName }} <button *ngIf="isCreator" class="button">End session</button></p>
-    <p>Invite link: {{ infoLink }}</p>
-  </form>
-  <form [formGroup]="endForm" (ngSubmit)="test()">
-    <p><button class="button">Test</button></p>
+    <p>USER: {{ infoName }}</p>
+    <p>INVITE LINK: {{ infoLink }}</p>
+    <div class="button-row">
+      <button *ngIf="!isCreator" type="button" class="button" (click)="leaveSession()">Leave Session</button>
+      <button *ngIf="isCreator" class="button">End Session</button>
+    </div>
   </form>
 </div>

@@ -6,9 +6,16 @@ import { DashboardComponent } from './dashboard.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JoinFormComponent } from './joinform/joinform.component';
 import { SubmitFormComponent } from './submitform/submitform.component';
+import { LiveboardComponent } from './liveboard/liveboard.component';
 
 @NgModule({
-  declarations: [DashboardComponent, CreateFormComponent, JoinFormComponent, SubmitFormComponent],
+  declarations: [
+    DashboardComponent,
+    CreateFormComponent,
+    JoinFormComponent,
+    SubmitFormComponent,
+    LiveboardComponent
+  ],
   imports: [
     CommonModule,
     DashboardRoutingModule,

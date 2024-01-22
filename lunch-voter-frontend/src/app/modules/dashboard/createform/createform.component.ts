@@ -66,11 +66,7 @@ export class CreateFormComponent implements OnInit {
 
           this.visibilityService.setVisibility(true);
 
-          this.websocketService.connect('/ws/topic/vote/' + data.code,
-            message => {
-              alert(message);
-              console.log(message);
-            });
+          // this.websocketService.connect();
 
           console.log(data);
         })
@@ -84,13 +80,13 @@ export class CreateFormComponent implements OnInit {
     }
   }
 
-  test(): void {
+  leaveSession(): void {
     this.websocketService.disconnect();
-    this.websocketService.connect('/ws/topic/vote/' + localStorage.getItem('code'),
-      message => {
-        alert(message);
-        console.log(message);
-      });
+
+    localStorage.removeItem('code');
+    localStorage.removeItem('name');
+    localStorage.removeItem('userCode');
+    window.location.reload();
   }
 
   endSession(): void {

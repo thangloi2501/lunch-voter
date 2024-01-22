@@ -1,4 +1,4 @@
-package com.gtech.model;
+package com.gtech.dto.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

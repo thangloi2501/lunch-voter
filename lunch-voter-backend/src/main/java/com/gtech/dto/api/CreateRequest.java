@@ -1,4 +1,4 @@
-package com.gtech.model;
+package com.gtech.dto.api;
 
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotBlank;
