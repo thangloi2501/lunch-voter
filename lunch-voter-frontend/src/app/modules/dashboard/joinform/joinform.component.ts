@@ -90,9 +90,6 @@ export class JoinFormComponent implements OnInit {
         'code': code
       })
         .then(res => {
-
-          console.log(res);
-
           if (res.message) {
             throw new Error(res.message);
           } else {
@@ -109,8 +106,6 @@ export class JoinFormComponent implements OnInit {
           this.infoLink = getLink(data.code);
 
           this.visibilityService.setLiveboardVisibility(true);
-
-          console.log(data);
         })
         .catch(error => {
           console.error('Error fetching data:', error);

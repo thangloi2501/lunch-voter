@@ -24,8 +24,6 @@ export class LiveboardComponent implements OnInit {
     this.visibilityService.liveboardVisibility$.subscribe((value) => {
       this.isShowBoard = value;
 
-      console.log(this.isShowBoard);
-
       if (this.isShowBoard) {
         this.loadVoteInfo();
         this.connect();
@@ -37,9 +35,6 @@ export class LiveboardComponent implements OnInit {
 
   ngOnInit() {
     this.isShowBoard = localStorage.getItem('code') != null;
-
-    console.log('>>' + localStorage.getItem('code'));
-    console.log('>>' + this.isShowBoard);
   }
 
   connect(): void {
@@ -49,7 +44,6 @@ export class LiveboardComponent implements OnInit {
       this.websocketService.connect('/ws/topic/vote/' + code,
         message => {
           this.handleMessage(message);
-
           console.log(message);
         });
     }
@@ -101,8 +95,6 @@ export class LiveboardComponent implements OnInit {
               updatedAt: item.updatedAt,
               isFinal: item.final
             }));
-
-          console.log(data);
         })
         .catch(error => {
           console.error('Error fetching data:', error);

@@ -29,9 +29,6 @@ export class SubmitFormComponent implements OnInit {
     this.submitForm = this.fb.group({
       vote: ['', [Validators.required, Validators.minLength(3)]]
     });
-
-    console.log('>>' + localStorage.getItem('code'));
-    console.log('>>' + this.isShowForm);
   }
 
   submitVote(): void {

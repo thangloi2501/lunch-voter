@@ -38,9 +38,6 @@ export class CreateFormComponent implements OnInit {
     });
 
     this.endForm = this.fb.group({});
-
-    console.log('>>' + localStorage.getItem('code'));
-    console.log('>>' + this.isShowForm);
   }
 
   createSession(): void {
@@ -69,10 +66,6 @@ export class CreateFormComponent implements OnInit {
           this.isCreator = true;
 
           this.visibilityService.setLiveboardVisibility(true);
-
-          // this.websocketService.connect();
-
-          console.log(data);
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -125,8 +118,6 @@ export class CreateFormComponent implements OnInit {
   endSession(): void {
     const code = localStorage.getItem('code');
     const userCode = localStorage.getItem('userCode');
-
-    console.log('>>>>>>>>>' + userCode);
 
     this.crudService.post('/votes/end', {
       'code': code,
