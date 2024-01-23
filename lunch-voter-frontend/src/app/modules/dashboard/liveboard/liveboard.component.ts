@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LiveboardComponent implements OnInit {
   isShowBoard: boolean = true;
+  isFinal: boolean = false;
   voteInfoList: VoteInfo[] = [];
 
   constructor(
@@ -106,5 +107,9 @@ export class LiveboardComponent implements OnInit {
           console.error('Error fetching data:', error);
         });
     }
+  }
+
+  hasFinalResult(): boolean {
+    return this.voteInfoList.some(item => item.isFinal === true);
   }
 }
