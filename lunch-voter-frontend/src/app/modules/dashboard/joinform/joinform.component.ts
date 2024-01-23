@@ -22,7 +22,11 @@ export class JoinFormComponent implements OnInit {
     private route: ActivatedRoute,
     private visibilityService: VisibilityService,
     private websocketService: WebsocketService
-  ) { }
+  ) {
+    // this.visibilityService.formVisibility$.subscribe((value) => {
+    //   this.isShowForm = (localStorage.getItem('userCode') == null) && value;
+    // });
+  }
 
   ngOnInit(): void {
     this.isShowForm = localStorage.getItem('userCode') == null;
@@ -38,12 +42,32 @@ export class JoinFormComponent implements OnInit {
   }
 
   leaveSession(): void {
-    this.websocketService.disconnect();
+    const code = localStorage.getItem('code');
+    const userCode = localStorage.getItem('userCode');
 
-    localStorage.removeItem('code');
-    localStorage.removeItem('name');
-    localStorage.removeItem('userCode');
-    window.location.reload();
+    this.crudService.put('/votes/leave', {
+      'code': code,
+      'userCode': userCode
+    })
+      .then(res => {
+        if (res.message) {
+          throw new Error(res.message);
+        } else {
+          return res.data;
+        }
+      })
+      .then(data => {
+        this.websocketService.disconnect();
+
+        localStorage.removeItem('code');
+        localStorage.removeItem('name');
+        localStorage.removeItem('userCode');
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        alert("Error leaving session: " + error.error.message);
+      });
   }
 
   joinSession(): void {
@@ -74,7 +98,7 @@ export class JoinFormComponent implements OnInit {
           this.infoName = name;
           this.infoLink = getLink(data.code);
 
-          this.visibilityService.setVisibility(true);
+          this.visibilityService.setLiveboardVisibility(true);
 
           console.log(data);
         })
@@ -90,5 +114,5 @@ export class JoinFormComponent implements OnInit {
 }
 
 function getLink(code: any) {
-  return location.origin + location.pathname + "/join?code=" + code;
+  return location.origin + location.pathname + "?code=" + code;
 }

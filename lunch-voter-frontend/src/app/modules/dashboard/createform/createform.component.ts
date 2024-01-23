@@ -24,7 +24,11 @@ export class CreateFormComponent implements OnInit {
     private location: Location,
     private visibilityService: VisibilityService,
     private websocketService: WebsocketService
-  ) { }
+  ) {
+    // this.visibilityService.formVisibility$.subscribe((value) => {
+    //   this.isShowForm = value;
+    // });
+  }
 
   ngOnInit() {
     this.createForm = this.fb.group({
@@ -64,7 +68,7 @@ export class CreateFormComponent implements OnInit {
           this.infoLink = getLink(data.code);
           this.isCreator = true;
 
-          this.visibilityService.setVisibility(true);
+          this.visibilityService.setLiveboardVisibility(true);
 
           // this.websocketService.connect();
 
@@ -81,12 +85,32 @@ export class CreateFormComponent implements OnInit {
   }
 
   leaveSession(): void {
-    this.websocketService.disconnect();
+    const code = localStorage.getItem('code');
+    const userCode = localStorage.getItem('userCode');
 
-    localStorage.removeItem('code');
-    localStorage.removeItem('name');
-    localStorage.removeItem('userCode');
-    window.location.reload();
+    this.crudService.put('/votes/leave', {
+      'code': code,
+      'userCode': userCode
+    })
+      .then(res => {
+        if (res.message) {
+          throw new Error(res.message);
+        } else {
+          return res.data;
+        }
+      })
+      .then(data => {
+        this.websocketService.disconnect();
+
+        localStorage.removeItem('code');
+        localStorage.removeItem('name');
+        localStorage.removeItem('userCode');
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        alert("Error leaving session: " + error.error.message);
+      });
   }
 
   endSession(): void {

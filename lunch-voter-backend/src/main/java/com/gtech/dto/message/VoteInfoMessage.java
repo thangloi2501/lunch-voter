@@ -13,6 +13,9 @@ import lombok.Setter;
 @Builder
 public class VoteInfoMessage implements Message {
 
+	@Builder.Default
+	private boolean isEnded = false;
+
 	private List<VoteItem> voteItems;
 
 	@Override

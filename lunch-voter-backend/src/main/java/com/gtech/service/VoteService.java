@@ -20,6 +20,7 @@ import com.gtech.utils.VoteUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,19 +72,14 @@ public class VoteService {
     final var voteSession = validateAndGetSession(joinRequest.getCode());
 
     final var userCode = VoteUtils.generateCode();
-    userVoteRepo.save(UserVote.builder()
+    userVoteRepo.saveAndFlush(UserVote.builder()
         .name(joinRequest.getName())
         .userCode(userCode)
         .voteSessionId(voteSession.getId())
         .build());
 
-    simpMessagingTemplate.convertAndSend(
-        VoteHelper.getTopicDestination(joinRequest.getCode()),
-        UserInfoMessage.builder()
-            .name(joinRequest.getName())
-            .action(AppUtils.getMessage("message.user.join-session"))
-            .updatedAt(LocalDateTime.now())
-            .build());
+    sendUserInfoMessage(joinRequest.getCode(), joinRequest.getName(), "message.user.join-session");
+    sendVoteInfoMessage(joinRequest.getCode(), voteSession.getUserVotes(), Optional.empty());
 
     return JoinResponse.builder()
         .code(voteSession.getCode())
@@ -106,11 +102,7 @@ public class VoteService {
     userVote.setVoteValue(submitRequest.getVoteValue());
     userVoteRepo.saveAndFlush(userVote);
 
-    simpMessagingTemplate.convertAndSend(
-        VoteHelper.getTopicDestination(submitRequest.getCode()),
-        VoteInfoMessage.builder()
-            .voteItems(VoteHelper.toVoteItems(voteSession.getUserVotes()))
-            .build());
+    sendVoteInfoMessage(submitRequest.getCode(), voteSession.getUserVotes(), Optional.empty());
   }
 
   @Transactional
@@ -122,7 +114,7 @@ public class VoteService {
     }
 
     final var votes = voteSession.getUserVotes();
-    if (!VoteHelper.hasVotes(votes)) {
+    if (!VoteHelper.allVoted(votes)) {
       throw ApiException.from(HttpStatus.BAD_REQUEST, "vote.error.empty-user-vote-list");
     }
 
@@ -137,13 +129,8 @@ public class VoteService {
         .findFirst()
         .orElse(endRequest.getUserCode());
 
-    simpMessagingTemplate.convertAndSend(
-        VoteHelper.getTopicDestination(endRequest.getCode()),
-        UserInfoMessage.builder()
-            .name(creatorName)
-            .action(AppUtils.getMessage("message.user.end-session"))
-            .updatedAt(LocalDateTime.now())
-            .build());
+    sendUserInfoMessage(endRequest.getCode(), creatorName, "message.user.end-session");
+    sendVoteInfoMessage(endRequest.getCode(), voteSession.getUserVotes(), Optional.of(finalVote));
   }
 
   @Transactional
@@ -151,7 +138,7 @@ public class VoteService {
     final var voteSession = voteSessionRepo.findOneByCode(code)
         .orElseThrow(() -> ApiException.notFound("Vote session", "code", code));
 
-    return VoteHelper.toVoteItems(voteSession.getUserVotes());
+    return VoteHelper.toVoteItems(voteSession.getUserVotes(), Optional.empty());
   }
 
   @Transactional
@@ -165,15 +152,10 @@ public class VoteService {
       throw ApiException.from(HttpStatus.BAD_REQUEST, "vote.leave.error.creator-cannot-leave-session");
     }
 
-    userVoteRepo.delete(userVote);
+    userVoteRepo.delete(userVote.getId());
 
-    simpMessagingTemplate.convertAndSend(
-        VoteHelper.getTopicDestination(leaveRequest.getCode()),
-        UserInfoMessage.builder()
-            .name(userVote.getName())
-            .action(AppUtils.getMessage("message.user.leave-session"))
-            .updatedAt(LocalDateTime.now())
-            .build());
+    sendUserInfoMessage(leaveRequest.getCode(), userVote.getName(), "message.user.leave-session");
+    sendVoteInfoMessage(leaveRequest.getCode(), voteSession.getUserVotes(), Optional.empty());
   }
 
   private VoteSession validateAndGetSession(String code) {
@@ -185,5 +167,24 @@ public class VoteService {
     }
 
     return voteSession;
+  }
+
+  private void sendVoteInfoMessage(String code, List<UserVote> userVotes, Optional<UserVote> finalVote) {
+    simpMessagingTemplate.convertAndSend(
+        VoteHelper.getTopicDestination(code),
+        VoteInfoMessage.builder()
+            .isEnded(finalVote.isPresent())
+            .voteItems(VoteHelper.toVoteItems(userVotes, finalVote))
+            .build());
+  }
+
+  private void sendUserInfoMessage(String code, String name, String key) {
+    simpMessagingTemplate.convertAndSend(
+        VoteHelper.getTopicDestination(code),
+        UserInfoMessage.builder()
+            .name(name)
+            .action(AppUtils.getMessage(key))
+            .updatedAt(LocalDateTime.now())
+            .build());
   }
 }

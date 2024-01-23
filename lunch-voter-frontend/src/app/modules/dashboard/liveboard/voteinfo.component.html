@@ -1,5 +1,10 @@
-<div class="vote">
+<div *ngIf="voteInfo.isFinal" class="vote_final">
   <span class="name">{{ voteInfo.name }}</span>
-  <span class="content">{{ voteInfo.voteValue }}</span>
+  <span class="content">{{ voteInfo.voteValue || '[no voting information]' }}</span>
+  <span class="datetime">{{ voteInfo.updatedAt | date: 'MMM d, y, h:mm a' }}</span>
+</div>
+<div *ngIf="!voteInfo.isFinal" class="vote">
+  <span class="name">{{ voteInfo.name }}</span>
+  <span class="content">{{ voteInfo.voteValue || '[no voting information]' }}</span>
   <span class="datetime">{{ voteInfo.updatedAt | date: 'MMM d, y, h:mm a' }}</span>
 </div>

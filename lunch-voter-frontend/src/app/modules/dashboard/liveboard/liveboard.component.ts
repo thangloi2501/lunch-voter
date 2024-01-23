@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CrudService } from 'src/app/shared/services/crud/crud.service';
 import { VisibilityService } from '../../../shared/services/visibility.service';
 import { WebsocketService } from 'src/app/shared/services/websocket.service';
-import { UserInfo } from 'src/app/shared/model/userinfo.model';
 import { VoteInfo } from 'src/app/shared/model/voteinfo.model';
-
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-liveboard',
@@ -14,14 +13,14 @@ import { VoteInfo } from 'src/app/shared/model/voteinfo.model';
 export class LiveboardComponent implements OnInit {
   isShowForm: boolean = true;
   voteInfoList: VoteInfo[] = [];
-  userInfo!: UserInfo;
 
   constructor(
     private crudService: CrudService,
     private visibilityService: VisibilityService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private toastr: ToastrService
   ) {
-    this.visibilityService.visibility$.subscribe((value) => {
+    this.visibilityService.liveboardVisibility$.subscribe((value) => {
       this.isShowForm = value;
 
       if (this.isShowForm) {
@@ -60,13 +59,23 @@ export class LiveboardComponent implements OnInit {
   handleMessage(message: any) {
     if (message.type === 'VOTE_INFO') {
       this.voteInfoList = message.voteItems.map(
-        (item: { name: any; voteValue: any; updatedAt: any; }) => ({
+        (item: { name: string; voteValue: string; updatedAt: Date; final: boolean }) => ({
           name: item.name,
           voteValue: item.voteValue,
-          updatedAt: item.updatedAt
+          updatedAt: item.updatedAt,
+          isFinal: item.final
         }));
+
+      if (message.ended) {
+        this.websocketService.disconnect();
+        localStorage.removeItem('code');
+        localStorage.removeItem('name');
+        localStorage.removeItem('userCode');
+
+        // this.visibilityService.setFormVisibility(false);
+      }
     } else {
-      this.userInfo = message as { name: string, action: string, updatedAt: Date };
+      this.toastr.show('User ' + message.name + ' ' + message.action);
     }
   }
 
@@ -83,6 +92,13 @@ export class LiveboardComponent implements OnInit {
           }
         })
         .then(data => {
+          this.voteInfoList = data.map(
+            (item: { name: any; voteValue: any; updatedAt: any; }) => ({
+              name: item.name,
+              voteValue: item.voteValue,
+              updatedAt: item.updatedAt
+            }));
+
           console.log(data);
         })
         .catch(error => {

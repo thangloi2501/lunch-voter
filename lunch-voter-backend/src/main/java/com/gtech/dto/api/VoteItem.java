@@ -22,4 +22,7 @@ public class VoteItem {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	private LocalDateTime updatedAt;
+
+	@Builder.Default
+	private boolean isFinal = false;
 }

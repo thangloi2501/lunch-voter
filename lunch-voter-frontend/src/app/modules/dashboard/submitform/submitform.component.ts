@@ -18,7 +18,7 @@ export class SubmitFormComponent implements OnInit {
     private fb: FormBuilder,
     private visibilityService: VisibilityService
   ) {
-    this.visibilityService.visibility$.subscribe((value) => {
+    this.visibilityService.liveboardVisibility$.subscribe((value) => {
       this.isShowForm = value;
     });
   }

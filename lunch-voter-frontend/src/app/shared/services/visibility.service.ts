@@ -5,10 +5,17 @@ import { BehaviorSubject, Observable } from 'rxjs';
     providedIn: 'root',
 })
 export class VisibilityService {
-    private visibilitySubject = new BehaviorSubject<boolean>(true);
-    visibility$: Observable<boolean> = this.visibilitySubject.asObservable();
+    private liveboardVisibilitySubject = new BehaviorSubject<boolean>(true);
+    liveboardVisibility$: Observable<boolean> = this.liveboardVisibilitySubject.asObservable();
 
-    setVisibility(value: boolean): void {
-        this.visibilitySubject.next(value);
+    private formVisibilitySubject = new BehaviorSubject<boolean>(true);
+    formVisibility$: Observable<boolean> = this.liveboardVisibilitySubject.asObservable();
+
+    setLiveboardVisibility(value: boolean): void {
+        this.liveboardVisibilitySubject.next(value);
+    }
+
+    setFormVisibility(value: boolean): void {
+        this.formVisibilitySubject.next(value);
     }
 }

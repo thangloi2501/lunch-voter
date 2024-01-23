@@ -8,6 +8,9 @@ import { JoinFormComponent } from './joinform/joinform.component';
 import { SubmitFormComponent } from './submitform/submitform.component';
 import { LiveboardComponent } from './liveboard/liveboard.component';
 import { VoteInfoComponent } from './liveboard/voteinfo.component';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -21,7 +24,9 @@ import { VoteInfoComponent } from './liveboard/voteinfo.component';
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
