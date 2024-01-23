@@ -12,7 +12,12 @@
 <div class="dash-board" id="info" *ngIf="!isShowForm">
   <form [formGroup]="endForm" (ngSubmit)="endSession()">
     <p>USER: {{ infoName }}</p>
-    <p>INVITE LINK: {{ infoLink }}</p>
+    <p>
+      INVITE LINK:
+      <span ngxClipboard [cbContent]="infoLink">
+        <a href="#">Click to copy to clipboard</a>
+      </span>
+    </p>
     <div class="button-row">
       <button *ngIf="!isCreator && isShowEndButton" type="button" class="button" (click)="leaveSession()">Leave Session</button>
       <button *ngIf="isCreator && isShowEndButton" class="button">End Session</button>

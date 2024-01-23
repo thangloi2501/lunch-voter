@@ -1,7 +1,7 @@
 <div class="dash-board" id="liveboard" *ngIf="isShowBoard">
   <div>
     <h3>Voting Information</h3>
-    <div *ngIf="hasFinalResult()" class="final-result">Session has been ended with final result</div>
+    <div *ngIf="hasFinalResult()" class="final-result">Session has been ended with final result!</div>
     <app-voteinfo *ngFor="let voteInfo of voteInfoList" [voteInfo]="voteInfo"></app-voteinfo>
   </div>
   <hr class="dotted" />

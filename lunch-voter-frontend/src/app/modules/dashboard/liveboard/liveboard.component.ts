@@ -73,6 +73,7 @@ export class LiveboardComponent implements OnInit {
 
         localStorage.setItem('isFinal', 'true')
         localStorage.removeItem('userCode');
+        localStorage.removeItem('isCreator');
         window.location.reload();
       }
     } else {

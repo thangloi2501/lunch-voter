@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudService } from 'src/app/shared/services/crud/crud.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Location } from '@angular/common';
 import { VisibilityService } from '../../../shared/services/visibility.service';
 import { WebsocketService } from 'src/app/shared/services/websocket.service';
+
 
 @Component({
   selector: 'app-createform',
@@ -105,6 +105,7 @@ export class CreateFormComponent implements OnInit {
         localStorage.removeItem('code');
         localStorage.removeItem('name');
         localStorage.removeItem('userCode');
+        localStorage.removeItem('isCreator');
         window.location.reload();
       })
       .catch(error => {
@@ -117,6 +118,7 @@ export class CreateFormComponent implements OnInit {
     localStorage.removeItem('isFinal');
     localStorage.removeItem('code');
     localStorage.removeItem('name');
+    localStorage.removeItem('isCreator');
     window.location.reload();
   }
 

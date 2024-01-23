@@ -63,6 +63,7 @@ export class JoinFormComponent implements OnInit {
         localStorage.removeItem('code');
         localStorage.removeItem('name');
         localStorage.removeItem('userCode');
+        localStorage.removeItem('isCreator');
         window.location.reload();
       })
       .catch(error => {
@@ -75,6 +76,7 @@ export class JoinFormComponent implements OnInit {
     localStorage.removeItem('isFinal');
     localStorage.removeItem('code');
     localStorage.removeItem('name');
+    localStorage.removeItem('isCreator');
     window.location.reload();
   }
 

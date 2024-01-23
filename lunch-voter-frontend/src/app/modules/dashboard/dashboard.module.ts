@@ -10,6 +10,7 @@ import { LiveboardComponent } from './liveboard/liveboard.component';
 import { VoteInfoComponent } from './liveboard/voteinfo.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ClipboardModule } from 'ngx-clipboard';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     DashboardRoutingModule,
     ReactiveFormsModule,
     ToastrModule.forRoot(),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ClipboardModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

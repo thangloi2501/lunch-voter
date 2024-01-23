@@ -19,7 +19,12 @@
 </div>
 <div class="dash-board" id="info" *ngIf="!isShowForm">
   <p>USER: {{ infoName }}</p>
-  <p>INVITE LINK: {{ infoLink }}</p>
+  <p>
+    INVITE LINK:
+    <span ngxClipboard [cbContent]="infoLink">
+      <a href="#">Click to copy to clipboard</a>
+    </span>
+  </p>
   <button *ngIf="isShowLeaveButton" type="button" class="button" (click)="leaveSession()">Leave Session</button>
   <button *ngIf="!isShowLeaveButton" class="button" (click)="newSession()">New Session</button>
 </div>
