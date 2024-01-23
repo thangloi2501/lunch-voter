@@ -13,6 +13,7 @@ import { WebsocketService } from 'src/app/shared/services/websocket.service';
 export class JoinFormComponent implements OnInit {
   joinForm!: FormGroup;
   isShowForm: boolean = true;
+  isShowLeaveButton: boolean = true;
   infoName = localStorage.getItem('name');
   infoLink = getLink(localStorage.getItem('code'));
 
@@ -23,13 +24,13 @@ export class JoinFormComponent implements OnInit {
     private visibilityService: VisibilityService,
     private websocketService: WebsocketService
   ) {
-    // this.visibilityService.formVisibility$.subscribe((value) => {
-    //   this.isShowForm = (localStorage.getItem('userCode') == null) && value;
-    // });
   }
 
   ngOnInit(): void {
-    this.isShowForm = localStorage.getItem('userCode') == null;
+    if (localStorage.getItem('isFinal')) this.isShowForm = false;
+    else this.isShowForm = localStorage.getItem('userCode') == null;
+
+    this.isShowLeaveButton = localStorage.getItem('isFinal') == null;
 
     this.route.queryParams.subscribe(params => {
       const code = params['code'] || '';
@@ -68,6 +69,13 @@ export class JoinFormComponent implements OnInit {
         console.error('Error fetching data:', error);
         alert("Error leaving session: " + error.error.message);
       });
+  }
+
+  newSession(): void {
+    localStorage.removeItem('isFinal');
+    localStorage.removeItem('code');
+    localStorage.removeItem('name');
+    window.location.reload();
   }
 
   joinSession(): void {

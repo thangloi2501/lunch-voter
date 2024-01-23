@@ -14,6 +14,7 @@ export class CreateFormComponent implements OnInit {
   createForm!: FormGroup;
   endForm!: FormGroup;
   isShowForm: boolean = true;
+  isShowEndButton: boolean = true;
   infoName = localStorage.getItem('name');
   infoLink = getLink(localStorage.getItem('code'));
   isCreator = localStorage.getItem('isCreator') == "true";
@@ -21,23 +22,22 @@ export class CreateFormComponent implements OnInit {
   constructor(
     private crudService: CrudService,
     private fb: FormBuilder,
-    private location: Location,
     private visibilityService: VisibilityService,
     private websocketService: WebsocketService
   ) {
-    // this.visibilityService.formVisibility$.subscribe((value) => {
-    //   this.isShowForm = value;
-    // });
   }
 
   ngOnInit() {
+    if (localStorage.getItem('isFinal')) this.isShowForm = false;
+    else this.isShowForm = localStorage.getItem('code') == null;
+
+    this.isShowEndButton = localStorage.getItem('isFinal') == null;
+
     this.createForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]]
     });
 
     this.endForm = this.fb.group({});
-
-    this.isShowForm = localStorage.getItem('code') == null;
 
     console.log('>>' + localStorage.getItem('code'));
     console.log('>>' + this.isShowForm);
@@ -111,6 +111,13 @@ export class CreateFormComponent implements OnInit {
         console.error('Error fetching data:', error);
         alert("Error leaving session: " + error.error.message);
       });
+  }
+
+  newSession(): void {
+    localStorage.removeItem('isFinal');
+    localStorage.removeItem('code');
+    localStorage.removeItem('name');
+    window.location.reload();
   }
 
   endSession(): void {

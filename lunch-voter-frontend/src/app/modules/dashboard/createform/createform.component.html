@@ -14,8 +14,9 @@
     <p>USER: {{ infoName }}</p>
     <p>INVITE LINK: {{ infoLink }}</p>
     <div class="button-row">
-      <button *ngIf="!isCreator" type="button" class="button" (click)="leaveSession()">Leave Session</button>
-      <button *ngIf="isCreator" class="button">End Session</button>
+      <button *ngIf="!isCreator && isShowEndButton" type="button" class="button" (click)="leaveSession()">Leave Session</button>
+      <button *ngIf="isCreator && isShowEndButton" class="button">End Session</button>
+      <button *ngIf="!isShowEndButton" class="button" (click)="newSession()">New Session</button>
     </div>
   </form>
 </div>

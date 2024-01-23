@@ -4,6 +4,7 @@ import static com.gtech.utils.VoteUtils.RANDOM;
 import static com.gtech.utils.VoteUtils.TOPIC_VOTE;
 
 import com.gtech.db.entity.UserVote;
+import com.gtech.db.entity.VoteSession;
 import com.gtech.dto.api.VoteItem;
 import java.util.List;
 import java.util.Objects;
@@ -30,16 +31,14 @@ public class VoteHelper {
     return String.format("%s/%s", TOPIC_VOTE, code);
   }
 
-  static List<VoteItem> toVoteItems(
-      List<UserVote> userVotes, Optional<UserVote> finalVote) {
-    return userVotes
+  static List<VoteItem> toVoteItems(VoteSession voteSession) {
+    return voteSession.getUserVotes()
         .stream()
         .map(userVote -> VoteItem.builder()
             .name(userVote.getName())
             .voteValue(userVote.getVoteValue())
             .updatedAt(userVote.getUpdatedAt())
-            .isFinal(finalVote.isPresent()
-                && Objects.equals(finalVote.get().getUserCode(), userVote.getUserCode()))
+            .isFinal(Objects.equals(userVote.getId(), voteSession.getFinalUserVoteId()))
             .build())
         .toList();
   }

@@ -20,7 +20,6 @@ import com.gtech.utils.VoteUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,7 +78,7 @@ public class VoteService {
         .build());
 
     sendUserInfoMessage(joinRequest.getCode(), joinRequest.getName(), "message.user.join-session");
-    sendVoteInfoMessage(joinRequest.getCode(), voteSession.getUserVotes(), Optional.empty());
+    sendVoteInfoMessage(joinRequest.getCode(), voteSession);
 
     return JoinResponse.builder()
         .code(voteSession.getCode())
@@ -102,7 +101,7 @@ public class VoteService {
     userVote.setVoteValue(submitRequest.getVoteValue());
     userVoteRepo.saveAndFlush(userVote);
 
-    sendVoteInfoMessage(submitRequest.getCode(), voteSession.getUserVotes(), Optional.empty());
+    sendVoteInfoMessage(submitRequest.getCode(), voteSession);
   }
 
   @Transactional
@@ -130,7 +129,7 @@ public class VoteService {
         .orElse(endRequest.getUserCode());
 
     sendUserInfoMessage(endRequest.getCode(), creatorName, "message.user.end-session");
-    sendVoteInfoMessage(endRequest.getCode(), voteSession.getUserVotes(), Optional.of(finalVote));
+    sendVoteInfoMessage(endRequest.getCode(), voteSession);
   }
 
   @Transactional
@@ -138,7 +137,7 @@ public class VoteService {
     final var voteSession = voteSessionRepo.findOneByCode(code)
         .orElseThrow(() -> ApiException.notFound("Vote session", "code", code));
 
-    return VoteHelper.toVoteItems(voteSession.getUserVotes(), Optional.empty());
+    return VoteHelper.toVoteItems(voteSession);
   }
 
   @Transactional
@@ -155,7 +154,7 @@ public class VoteService {
     userVoteRepo.delete(userVote.getId());
 
     sendUserInfoMessage(leaveRequest.getCode(), userVote.getName(), "message.user.leave-session");
-    sendVoteInfoMessage(leaveRequest.getCode(), voteSession.getUserVotes(), Optional.empty());
+    sendVoteInfoMessage(leaveRequest.getCode(), voteSession);
   }
 
   private VoteSession validateAndGetSession(String code) {
@@ -169,12 +168,12 @@ public class VoteService {
     return voteSession;
   }
 
-  private void sendVoteInfoMessage(String code, List<UserVote> userVotes, Optional<UserVote> finalVote) {
+  private void sendVoteInfoMessage(String code, VoteSession voteSession) {
     simpMessagingTemplate.convertAndSend(
         VoteHelper.getTopicDestination(code),
         VoteInfoMessage.builder()
-            .isEnded(finalVote.isPresent())
-            .voteItems(VoteHelper.toVoteItems(userVotes, finalVote))
+            .isEnded(Objects.nonNull(voteSession.getFinalUserVoteId()))
+            .voteItems(VoteHelper.toVoteItems(voteSession))
             .build());
   }
 

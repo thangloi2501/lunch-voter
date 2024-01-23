@@ -1,4 +1,4 @@
-<div class="dash-board" id="liveboard" *ngIf="isShowForm">
+<div class="dash-board" id="liveboard" *ngIf="isShowBoard">
   <div>
     <h3>Voting Information</h3>
     <app-voteinfo *ngFor="let voteInfo of voteInfoList" [voteInfo]="voteInfo"></app-voteinfo>
