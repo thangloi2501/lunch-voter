@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
-/**
- * @author Loi Nguyen
- */
 @Getter @Setter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_ABSENT)

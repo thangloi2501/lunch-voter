@@ -60,7 +60,6 @@ public class VoteController {
         .build();
   }
 
-  //TODO: 1. handle leave session 2. get list of votes 3. don dep code 4. viet doc
   @ApiOperation(value = "Submit a vote. User can change vote value multiple times in a session.")
   @PutMapping("/submit")
   @ApiResponses(value = {

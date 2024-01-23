@@ -8,10 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-/**
- * @author Loi Nguyen
- *
- */
 @Setter
 @AllArgsConstructor @Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -72,15 +68,7 @@ public class ApiException extends RuntimeException {
         return new ApiException(httpStatus, AppUtils.getMessage(messageKey, args));
     }
 
-    public static ApiException existed(String subject, String key, Object value) {
-        return new ApiException(HttpStatus.BAD_REQUEST, AppUtils.getMessage("common.error.existed", subject, key, value));
-    }
-
     public static ApiException notFound(String subject, String key, Object value) {
         return new ApiException(HttpStatus.NOT_FOUND, AppUtils.getMessage("common.error.not-found", subject, key, value));
-    }
-
-    public static ApiException unauthorized() {
-        return new ApiException(HttpStatus.UNAUTHORIZED, AppUtils.getMessage("common.error.unauthorized"));
     }
 }

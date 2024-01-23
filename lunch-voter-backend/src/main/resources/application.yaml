@@ -28,7 +28,6 @@ spring:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     database-platform: org.hibernate.dialect.H2Dialect
 
-
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER

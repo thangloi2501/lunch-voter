@@ -8,7 +8,6 @@ import com.gtech.db.entity.VoteSession;
 import com.gtech.dto.api.VoteItem;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.CollectionUtils;

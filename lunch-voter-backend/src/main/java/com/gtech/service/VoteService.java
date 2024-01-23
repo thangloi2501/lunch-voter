@@ -21,11 +21,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class VoteService {
 
@@ -45,6 +47,8 @@ public class VoteService {
 
   @Transactional
   public CreateResponse createSession(CreateRequest createRequest) {
+    log.debug("create session: {}", createRequest);
+
     final var code = VoteUtils.generateCode();
     final var userCode = VoteUtils.generateCode();
 
@@ -68,6 +72,8 @@ public class VoteService {
 
   @Transactional
   public JoinResponse joinSession(JoinRequest joinRequest) {
+    log.debug("join session: {}", joinRequest);
+
     final var voteSession = validateAndGetSession(joinRequest.getCode());
 
     final var userCode = VoteUtils.generateCode();
@@ -88,6 +94,8 @@ public class VoteService {
 
   @Transactional
   public void submitVote(SubmitRequest submitRequest) {
+    log.debug("submit session: {}", submitRequest);
+
     final var voteSession = validateAndGetSession(submitRequest.getCode());
 
     final var userVote = userVoteRepo.findOneByUserCode(submitRequest.getUserCode())
@@ -106,6 +114,8 @@ public class VoteService {
 
   @Transactional
   public void endSession(EndRequest endRequest) {
+    log.debug("end session: {}", endRequest);
+
     final var voteSession = validateAndGetSession(endRequest.getCode());
 
     if (!Objects.equals(endRequest.getUserCode(), voteSession.getCreatorCode())) {
@@ -134,6 +144,8 @@ public class VoteService {
 
   @Transactional
   public List<VoteItem> getVotes(String code) {
+    log.debug("get votes: {}", code);
+
     final var voteSession = voteSessionRepo.findOneByCode(code)
         .orElseThrow(() -> ApiException.notFound("Vote session", "code", code));
 
@@ -142,6 +154,8 @@ public class VoteService {
 
   @Transactional
   public void leaveSession(LeaveRequest leaveRequest) {
+    log.debug("leave session: {}", leaveRequest);
+
     final var voteSession = validateAndGetSession(leaveRequest.getCode());
 
     final var userVote = userVoteRepo.findOneByUserCode(leaveRequest.getUserCode())
@@ -161,7 +175,7 @@ public class VoteService {
     final var voteSession = voteSessionRepo.findOneByCode(code)
         .orElseThrow(() -> ApiException.notFound("Vote session", "code", code));
 
-    if (Objects.nonNull(voteSession.getFinalUserVote())) {
+    if (Objects.nonNull(voteSession.getFinalUserVoteId())) {
       throw ApiException.from(HttpStatus.BAD_REQUEST, "vote.error.session-ended");
     }
 
