@@ -25,6 +25,7 @@ cd lunch-voter/lunch-voter-backend
 mvn clean
 mvn spring-boot:run
 ```
+Backend REST APIs and Websocket messages will be accessible via host:port `http://localhost:8080`
 
 ## Test the application
 ```bash

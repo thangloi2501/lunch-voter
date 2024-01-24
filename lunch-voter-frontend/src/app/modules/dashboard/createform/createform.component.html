@@ -2,7 +2,7 @@
   <form [formGroup]="createForm" (ngSubmit)="createSession()">
     <div>
       <input class="input" type="text" id="name" name="name" placeholder="Enter your name" formControlName="name" required />
-      <button class="button" type="submit" [disabled]="createForm.invalid">Create session</button>
+      <button class="button" type="submit" [disabled]="createForm.invalid">Create Session</button>
     </div>
     <div *ngIf="createForm.get('name')!.invalid && createForm.get('name')!.touched">
       <small>Please enter a valid name (minimum 3 characters).</small>
