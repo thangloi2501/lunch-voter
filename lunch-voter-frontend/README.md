@@ -3,14 +3,14 @@
 ## Tech stacks
 
 - [Angular 16](https://angular.io/)
-- [npm 9.6.6](https://www.npmjs.com/)
-- [Node.js v16/v18](https://nodejs.org/en)
+- [Node.js v18.19.0](https://nodejs.org/)
+- [npm 10.2.3](https://www.npmjs.com/package/npm/v/10.2.3)
 
 ## Clone source code and setup environment
 
-- This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.3.
 - Install [Git](https://git-scm.com/).
-- Install npm and Node.js as mentioned above.
+- Install npm and Node.js ([v18.19.0](https://nodejs.org/download/release/v18.19.0/)) as mentioned above.
+- Install [Angular CLI](https://github.com/angular/angular-cli) version 16.2.3.
 
 ```bash
 git clone https://github.com/thangloi2501/lunch-voter.git
