@@ -113,4 +113,6 @@ class VoteControllerTest extends Specification {
         1 * voteService.endSession(_)
         result.andExpect(MockMvcResultMatchers.status().isOk())
     }
+
+    //TODO: Add more unit tests here
 }

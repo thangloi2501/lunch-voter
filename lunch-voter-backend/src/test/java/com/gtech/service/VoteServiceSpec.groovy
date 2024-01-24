@@ -1,6 +1,7 @@
 package com.gtech.service
 
 import com.gtech.config.TestEnvironmentConfiguration
+import com.gtech.db.entity.UserVote
 import com.gtech.db.entity.VoteSession
 import com.gtech.db.repository.UserVoteRepo
 import com.gtech.db.repository.VoteSessionRepo
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
+
+import java.time.LocalDateTime
 
 import static com.gtech.utils.VoteUtils.TOPIC_VOTE
 
@@ -32,10 +35,19 @@ class VoteServiceSpec extends Specification {
     @SpringBean
     SimpMessagingTemplate simpMessagingTemplate = Mock()
 
+    def userVote = Mock(UserVote.class) {
+        getUserCode() >> 'dummy-userCode'
+        getName() >> 'dummy-name'
+        getVoteValue() >> 'dummy-voteValue'
+        getCreatedAt() >> LocalDateTime.now()
+        getVoteSessionId() >> 1L
+    }
+
     def voteSession = Mock(VoteSession.class) {
         getId() >> 1L
         getCode() >> 'dummy-code'
         getCreatorCode() >> 'dummy-usercode'
+        getUserVotes() >> [userVote]
     }
 
 
@@ -86,7 +98,9 @@ class VoteServiceSpec extends Specification {
 
         then:
         1 * voteSessionRepo.findOneByCode(_) >> Optional.of(voteSession)
-        1 * userVoteRepo.save(_)
-        1 * simpMessagingTemplate.convertAndSend(String.format("%s/%s", TOPIC_VOTE, "dummy-code"), _)
+        1 * userVoteRepo.saveAndFlush(_)
+        2 * simpMessagingTemplate.convertAndSend(String.format("%s/%s", TOPIC_VOTE, "dummy-code"), _)
     }
+
+    //TODO: Add more unit tests here
 }
